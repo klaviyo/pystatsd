@@ -269,19 +269,21 @@ class Pipeline(PipelineBase):
 
     def _send(self):
         data = self._stats.popleft()
+        pipeline_stats = []
         while self._stats:
             # Use popleft to preserve the order of the stats.
             stat = self._stats.popleft()
+            pipeline_stats.append(stat)
             if len(stat) + len(data) + 1 >= self._maxudpsize:
                 self._client._after(stat, data)
                 data = stat
             else:
                 data += '\n' + stat
-        self._client._after(stat, data)
+        self._client._after(','.join(pipeline_stats), data)
 
 
 class TCPPipeline(PipelineBase):
 
     def _send(self):
-        self._client._after('\n'.join(self._stats))
+        self._client._after(None, '\n'.join(self._stats))
         self._stats.clear()

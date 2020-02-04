@@ -11,7 +11,7 @@ class ScaleTimer(Timer):
     """A context manager/decorator for statsd.timing()."""
 
     def __init__(self, client, stat, rate=1, scale=1):
-        super(ScaleTimer, self).__init__(client, stat, rate=1)
+        super(ScaleTimer, self).__init__(client, stat, rate=rate)
         self.scale = scale
 
     def send(self):
